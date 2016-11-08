@@ -626,6 +626,46 @@ then
 		CFLAGS="$SAVE_CFLAGS"
 	fi
 fi
+echo "ben $CFLAGS"
+echo "libs $LIBS"
+#
+SAVECFLAGS="$CFLAGS"
+
+PKG_CHECK_MODULES(LIBNL3, libnl-3.0 >= 3.1, [have_libnl3=yes], [have_libnl3=no])
+
+if (test "${have_libnl3}" = "yes"); then
+
+        CFLAGS+="$LIBNL3_CFLAGS"
+
+        LIBS+=" libnl-3.0"
+
+else
+	echo "else"
+	PKG_CHECK_MODULES(LIBNL2, libnl-2.0 >= 2.0, [have_libnl2=yes], [have_libnl2=no])
+	if (test "${have_libnl2}" = "yes"); then
+		echo "check libnl2"
+	        CFLAGS+="$LIBNL2_CFLAGS"
+
+        	LIBS+="$LIBNL2_LIBS"
+	else
+		PKG_CHECK_MODULES(LIBNL1, libnl-1 >= 1, [have_libnl1=yes], [have_libnl1=no])
+			echo "libnl1"
+		if (test "${have_libnl1}" = "yes"); then
+			echo "have nl1"
+                CFLAGS+="$LIBNL1_CFLAGS"
+		SAVE_LIBS="$LIBS"
+                LIBS="$LIBNL1_LIBS"
+
+		fi
+	fi
+
+
+fi
+
+echo "ben $CFLAGS"
+echo "libs $LIBS"
+
+
 AM_CONDITIONAL(IP_VS_H_NEEDS_KERNEL_CFLAGS, test "x$ip_vs_h_needs_kernel_cflags" = "xyes")
 
 # For quota module

@@ -46,7 +46,7 @@
 //TODO ben remove this
 // Need to check valid versions to use and what version is int he kernel header.
 //out older version does not have netlink
-#include "ip_vs.h"
+//#include "ip_vs.h"
 
 /* this can probably only be found in the kernel sources */
 //#if HAVE_LINUX_IP_VS_H
@@ -66,10 +66,12 @@
 #include <netlink/genl/ctrl.h>
 #include <netlink/msg.h>
 //TODO ben need to decide if we need this file or can just include needed policy
-#include "ip_vs_nl_policy.c"
+//#include "ip_vs_nl_policy.c"
 
 #define LIBIPVS_USE_NL
 #define FALLBACK_LIBNL1
+#include "ip_vs.h"
+#include "ip_vs_nl_policy.c"
 
 
 #ifdef LIBIPVS_USE_NL
@@ -376,7 +378,7 @@ struct ip_vs_get_services *ipvs_get_services(void)
 		struct ip_vs_get_services_kern *getk;
 		socklen_t len;
 		int i;
-		char straddr[INET6_ADDRSTRLEN];
+	//	char straddr[INET6_ADDRSTRLEN];
 
 #ifdef LIBIPVS_USE_NL
 		if (try_nl) {
@@ -669,13 +671,13 @@ static int get_ti (struct ip_vs_dest_entry *de, char *ti, size_t size)
 
 	/* inet_ntoa() returns a pointer to a statically allocated buffer
 	* I hope non-glibc systems behave the same */
-	if ( se->af == AF_INET6) {
-		len = ssnprintf (pi, size, "%s_%u", inet_ntop(AF_INET6, &addr,
+	if ( de->af == AF_INET6) {
+		len = ssnprintf (ti, size, "%s_%u", inet_ntop(AF_INET6, &addr,
 				straddr, sizeof(straddr)),
-				ntohs (se->port));
+				ntohs (de->port));
 	}else {
-		len = ssnprintf (pi, size, "%s_%u", inet_ntoa (addr.in),
-				ntohs (se->port));
+		len = ssnprintf (ti, size, "%s_%u", inet_ntoa (addr.in),
+				ntohs (de->port));
 	}
 
 	if ((0 > len) || (size <= ((size_t) len))) {
@@ -727,7 +729,7 @@ static void cipvs_submit_if (const char *pi, const char *t, const char *ti,
 
 static void cipvs_submit_dest (const char *pi, struct ip_vs_dest_entry *de)
 {
-	struct ip_vs_stats_64 stats = de->stats64;
+	struct ip_vs_stats64  stats = de->stats64;
 
 	char ti[DATA_MAX_NAME_LEN];
 
