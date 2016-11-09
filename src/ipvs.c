@@ -68,8 +68,6 @@
 //TODO ben need to decide if we need this file or can just include needed policy
 //#include "ip_vs_nl_policy.c"
 
-#define LIBIPVS_USE_NL
-#define FALLBACK_LIBNL1
 #include "ip_vs.h"
 #include "ip_vs_nl_policy.c"
 
