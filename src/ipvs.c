@@ -43,7 +43,7 @@
 #endif /* HAVE_NETINET_IN_H */
 
 #ifdef LIBIPVS_USE_NL
-//Include our own version of ip_vs.h
+//Include our additional structures to ip_vs.h
 #include <ip_vs.h>
 #else
 #if HAVE_LINUX_IP_VS_H
@@ -64,10 +64,15 @@
 
 
 #ifdef LIBIPVS_USE_NL
+#define ip_vs_service_entry ip_vs_service_entry1
+#define ip_vs_dest_entry ip_vs_dest_entry1
+#define ip_vs_get_dests ip_vs_get_dests1
+#define ip_vs_get_services ip_vs_get_services1
 #ifdef FALLBACK_LIBNL1
 #define nl_sock         nl_handle
 #define nl_socket_alloc nl_handle_alloc
 #define nl_socket_free  nl_handle_destroy
+
 #endif
 static  struct nl_sock *sock = NULL;
 static  int family;
